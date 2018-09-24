@@ -19,9 +19,32 @@ app.get("/", function (req, res) {
 });
 
 
-// your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
+// Timestamp Microservice Endpoints
+// On empty datestring return new Date().
+app.get("/api/timestamp", (req, res) => {
+  const emptyDate = new Date(),
+        timestampObject = {
+          unix: emptyDate.getTime(), 
+          utc: emptyDate.toUTCString()
+        };
+  res.json(timestampObject);
+});
+
+// On datestring try to parse it or return error.
+app.get("/api/timestamp/:datestring", (req, res) => {
+  let timestampObject = {
+        unix: 0,
+        utc: ''
+      };
+  if (!Date.parse(req.params.datestring)) {
+    timestampObject = {unix: null, utc: 'Invalid Date'};
+  }
+  else {
+    const date = new Date(req.params.datestring);
+    timestampObject = {unix: date.getTime(), utc: date.toUTCString()};
+  }
+  console.log(req.params, Date.parse(req.params.datestring));
+  res.json(timestampObject);
 });
 
 
